@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\location;
+use App\Models\Location;
 use Illuminate\Http\Request;
 use Auth;
 
@@ -113,7 +113,6 @@ class LocationController extends Controller
             'end_time' => 'required',
         ]);
 
-        // $data = Location::find(Auth::user()->id);
         $data = Location::where('user_id', $request->user_id)->first();
 
         $data->start_time = $request->start_time;
