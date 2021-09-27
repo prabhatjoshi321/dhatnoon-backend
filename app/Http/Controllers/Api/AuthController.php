@@ -56,10 +56,10 @@ class AuthController extends Controller
         $token->save();
 
         //Location table entry creation
-        $user_avail_loc = Location::where('user_id', $user->id)->first();
+        $user_avail_loc = location::where('user_id', $user->id)->first();
 
         if($user_avail_loc == null){
-            $location = new Location([
+            $location = new location([
                 'user_id' => $user->id,
                 'lat' => 0,
                 'long' => 0,
