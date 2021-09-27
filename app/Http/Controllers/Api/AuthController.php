@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Models\Location;
+use App\Models\location;
 use App\Models\Permissions;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
