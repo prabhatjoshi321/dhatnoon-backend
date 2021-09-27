@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
-
-use App\Models\camerastream;
+use App\Models\Permissions;
 use Illuminate\Http\Request;
 
-class CamerastreamController extends Controller
+class PermissionsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -42,10 +41,10 @@ class CamerastreamController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\camerastream  $camerastream
+     * @param  \App\Models\Permissions  $permissions
      * @return \Illuminate\Http\Response
      */
-    public function show(camerastream $camerastream)
+    public function show(Permissions $permissions)
     {
         //
     }
@@ -53,10 +52,10 @@ class CamerastreamController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\camerastream  $camerastream
+     * @param  \App\Models\Permissions  $permissions
      * @return \Illuminate\Http\Response
      */
-    public function edit(camerastream $camerastream)
+    public function edit(Permissions $permissions)
     {
         //
     }
@@ -65,10 +64,10 @@ class CamerastreamController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\camerastream  $camerastream
+     * @param  \App\Models\Permissions  $permissions
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, camerastream $camerastream)
+    public function update(Request $request, Permissions $permissions)
     {
         //
     }
@@ -76,10 +75,10 @@ class CamerastreamController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\camerastream  $camerastream
+     * @param  \App\Models\Permissions  $permissions
      * @return \Illuminate\Http\Response
      */
-    public function destroy(camerastream $camerastream)
+    public function destroy(Permissions $permissions)
     {
         //
     }

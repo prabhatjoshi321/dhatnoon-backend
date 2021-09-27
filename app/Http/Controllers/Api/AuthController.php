@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Location;
+use App\Models\Permissions;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -19,15 +20,15 @@ class AuthController extends Controller
     public function signup(Request $request){
         $request->validate([
             'name' => 'required',
-            'email' => 'required|string|unique:users',
-            'usertype' => 'required|integer',
-            'password' => 'required|string|confirmed'
+            'email' => 'required|email|unique:users',
+            'phone_number' => 'required|numeric|between:1000000000,9999999999',
+            'password' => 'required|string|confirmed|min:6'
         ]);
 
         $user = new User([
             'name' => $request->name,
             'email' => $request->email,
-            'usertype' => $request->usertype,
+            'phone_number' => $request->phone_number,
             'password' => bcrypt($request->password)
         ]);
 
@@ -51,18 +52,17 @@ class AuthController extends Controller
         $user = $request->user();
         $tokenResult = $user->createToken('Personal Access Token');
         $token = $tokenResult->token;
-        $token->expires_at = Carbon::now()->addWeeks(20);
+        $token->expires_at = Carbon::now()->addDays(1);
         $token->save();
 
-        $user_avail = Location::where('user_id', $user->id)->first();
+        //Location table entry creation
+        $user_avail_loc = Location::where('user_id', $user->id)->first();
 
-        if($user_avail == null){
+        if($user_avail_loc == null){
             $location = new Location([
                 'user_id' => $user->id,
                 'lat' => 0,
                 'long' => 0,
-                'start_time' => '2021-09-03 17:44:24.718398',
-                'end_time' => '2021-09-03 17:44:24.718398',
             ]);
             $location->save();
         }
@@ -70,9 +70,9 @@ class AuthController extends Controller
         return response()->json([
             'username' => $user->name,
             'id' => $user->id,
-            'usertype' => $user->usertype,
+            'phone_number' => $user->phone_number,
             'access_token' => $tokenResult->accessToken,
-            'access_t' => $user_avail,
+            'loc_check' => $user_avail_loc,
             'token_type' => 'Bearer',
             'expires_at' => Carbon::parse(
                 $tokenResult->token->expires_at
@@ -81,21 +81,8 @@ class AuthController extends Controller
         ]);
     }
 
-
-    public function user_get()
-    {
-        $usertype = Auth::user()->usertype;
-
-        if($usertype === 2){
-            return response()->json([
-                'unauthorised',
-            ], 401);
-        }
-
-
-        return response()->json([
-            'data' => User::where('usertype', 2)->get()
-        ]);
+    public function user(Request $request){
+        return response()->json($request->user());
     }
 
 }

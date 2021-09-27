@@ -27,12 +27,11 @@ Route::group([
     Route::group([
         'middleware' => 'auth:api'
     ], function() {
+        Route::get('/user', 'App\Http\Controllers\Api\AuthController@user');
         Route::get('/logout', 'App\Http\Controllers\Api\AuthController@logout');
+        //Data Feed
         Route::post('/location_save', 'App\Http\Controllers\Api\LocationController@location_save');
-        Route::post('/location_choice', 'App\Http\Controllers\Api\LocationController@location_choice');
-        Route::post('/location_request', 'App\Http\Controllers\Api\LocationController@location_request');
-        Route::post('/user_check', 'App\Http\Controllers\Api\LocationController@user_check');
-        Route::get('/user_get', 'App\Http\Controllers\Api\AuthController@user_get');
+        //Data Send
+
     });
-   // Route::get('/home', 'App\Http\Controllers\Api\HomeController@index')->name('home');
 });

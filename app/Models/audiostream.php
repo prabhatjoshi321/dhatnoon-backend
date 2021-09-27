@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class audiostream extends Model
+class Audiostream extends Model
 {
     use HasFactory;
 }

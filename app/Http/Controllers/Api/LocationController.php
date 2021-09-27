@@ -29,8 +29,6 @@ class LocationController extends Controller
         $request->validate([
             'lat' => 'required',
             'long' => 'required',
-            'start_time' => '',
-            'end_time' => '',
         ]);
 
         // $data = Location::find(Auth::user()->id);
@@ -39,96 +37,14 @@ class LocationController extends Controller
         $data->lat = $request->lat;
         $data->long = $request->long;
 
-        if( $request->start_time != null){
-            $data->start_time = $request->start_time;
-            $data->end_time = $request->end_time;
-        }else{
-            $data->start_time = $data->start_time;
-            $data->end_time = $data->end_time;
-        }
-
         $data->save();
 
         return response()->json([
             'data' => $data,
-            'status' => $data->day_access,
-            'start_time' => $data->start_time,
-            'end_time' => $data->end_time,
             'message' => 'Successfully saved Location!'
         ], 201);
     }
 
-    public function location_choice(Request $request)
-    {
-        $request->validate([
-            'lat' => 'required',
-            'long' => 'required',
-            'day_access' => '',
-        ]);
-
-        // $data = Location::find(Auth::user()->id);
-        $data = Location::where('user_id', Auth::user()->id)->first();
-
-        $data->lat = $request->lat;
-        $data->long = $request->long;
-
-        if( $request->day_access != null){
-            $data->day_access = $request->day_access;
-        }
-
-        $data->save();
-
-        return response()->json([
-            'data' => $data,
-            'status' => $data->day_access,
-            'start_time' => $data->start_time,
-            'end_time' => $data->end_time,
-            'message' => 'Successfully saved Location!'
-        ], 201);
-    }
-
-    public function user_check(Request $request)
-    {
-        $request -> validate([
-            'user_id' => 'required'
-        ]);
-
-        $data = Location::where('user_id', $request->user_id)->first();
-        return response()->json([
-            'data' => $data,
-            'lat' => $data->lat,
-            'long' => $data->long,
-            'start_time' => $data->start_time,
-            'end_time' => $data->end_time,
-            'day_access' => $data->day_access,
-        ]);
-
-    }
-
-    public function Location_request(Request $request)
-    {
-        $request->validate([
-            'user_id' => 'required',
-            'start_time' => 'required',
-            'end_time' => 'required',
-        ]);
-
-        $data = Location::where('user_id', $request->user_id)->first();
-
-        $data->start_time = $request->start_time;
-        $data->end_time = $request->end_time;
-        $data->day_access = 0;
-
-        $data->save();
-
-        return response()->json([
-            'data' => $data,
-            'status' => $data->day_access,
-            'start_time' => $data->start_time,
-            'end_time' => $data->end_time,
-            'message' => 'Successfully saved Location!'
-        ], 201);
-    }
 
     /**
      * Store a newly created resource in storage.

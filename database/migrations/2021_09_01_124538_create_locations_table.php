@@ -18,9 +18,7 @@ class CreateLocationsTable extends Migration
             $table->integer('user_id');
             $table->string('lat');
             $table->string('long');
-            $table->dateTime('start_time')->default('2021-09-03 17:44:24.718398');
-            $table->dateTime('end_time')->default('2021-09-03 17:44:24.718398');
-            $table->boolean('day_access')->default(0);
+
             $table->timestamps();
         });
     }
