@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Location;
+use App\Models\location;
 use Illuminate\Http\Request;
 use Auth;
 
