@@ -29,9 +29,15 @@ Route::group([
     ], function() {
         Route::get('/user', 'App\Http\Controllers\Api\AuthController@user');
         Route::get('/logout', 'App\Http\Controllers\Api\AuthController@logout');
-        //Data Feed
+        //location Stream from user device
         Route::post('/location_save', 'App\Http\Controllers\Api\LocationController@location_save');
-        //Data Send
+        //Permission Controller
+        Route::post('/make_request', 'App\Http\Controllers\Api\PermissionsController@make_request');
+        Route::get('/approved_requests', 'App\Http\Controllers\Api\PermissionsController@approved_requests');
+        Route::get('/request_select', 'App\Http\Controllers\Api\PermissionsController@request_select');
+        Route::post('/get_user_location', 'App\Http\Controllers\Api\PermissionsController@get_user_location');
+        Route::post('/allow_deny_controller', 'App\Http\Controllers\Api\PermissionsController@allow_deny_controller');
+
 
     });
 });
