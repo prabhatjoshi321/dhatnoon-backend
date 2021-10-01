@@ -32,7 +32,7 @@ class LocationController extends Controller
         ]);
 
         // $data = Location::find(Auth::user()->id);
-        $data = Location::where('user_id', Auth::user()->id)->first();
+        $data = location::where('user_id', Auth::user()->id)->first();
 
         $data->lat = $request->lat;
         $data->long = $request->long;
