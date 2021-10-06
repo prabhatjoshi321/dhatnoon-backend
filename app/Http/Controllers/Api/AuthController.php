@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Camerastream;
+use App\Models\camerastream;
 use App\Models\User;
 use App\Models\location;
 use App\Models\Permissions;
@@ -69,10 +69,10 @@ class AuthController extends Controller
         }
 
         //Camera table entry creation
-        $user_avail_cam = Camerastream::where('user_id', $user->id)->first();
+        $user_avail_cam = camerastream::where('user_id', $user->id)->first();
 
         if($user_avail_cam == null){
-            $camera = new Camerastream([
+            $camera = new camerastream([
                 'user_id' => $user->id,
                 'frontcam_pic' => '',
                 'rearcam_pic' => '',
