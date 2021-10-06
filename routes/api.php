@@ -37,6 +37,12 @@ Route::group([
         Route::get('/request_select', 'App\Http\Controllers\Api\PermissionsController@request_select');
         Route::post('/get_user_location', 'App\Http\Controllers\Api\PermissionsController@get_user_location');
         Route::post('/allow_deny_controller', 'App\Http\Controllers\Api\PermissionsController@allow_deny_controller');
+        //Camerastream Controller
+        Route::post('/front_camera_post', 'App\Http\Controllers\Api\CamerastreamController@front_camera_post');
+        Route::post('/rear_camera_post', 'App\Http\Controllers\Api\CamerastreamController@rear_camera_post');
+        Route::get('/cam_request_check', 'App\Http\Controllers\Api\CamerastreamController@cam_request_check');
+        Route::post('/get_user_frontcam', 'App\Http\Controllers\Api\CamerastreamController@get_user_frontcam');
+        Route::post('/get_user_rearcam', 'App\Http\Controllers\Api\CamerastreamController@get_user_rearcam');
 
 
     });

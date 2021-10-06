@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Camerastream;
 use App\Models\User;
 use App\Models\location;
 use App\Models\Permissions;
@@ -67,12 +68,27 @@ class AuthController extends Controller
             $location->save();
         }
 
+        //Camera table entry creation
+        $user_avail_cam = Camerastream::where('user_id', $user->id)->first();
+
+        if($user_avail_cam == null){
+            $camera = new Camerastream([
+                'user_id' => $user->id,
+                'frontcam_pic' => '',
+                'rearcam_pic' => '',
+                'frontcam_request' => 0,
+                'rearcam_request' => 0,
+            ]);
+            $camera->save();
+        }
+
         return response()->json([
             'username' => $user->name,
             'id' => $user->id,
             'phone_number' => $user->phone_number,
             'access_token' => $tokenResult->accessToken,
             'loc_check' => $user_avail_loc,
+            'cam_check' => $user_avail_cam,
             'token_type' => 'Bearer',
             'expires_at' => Carbon::parse(
                 $tokenResult->token->expires_at
