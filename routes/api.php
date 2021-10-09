@@ -43,7 +43,8 @@ Route::group([
         Route::get('/cam_request_check', 'App\Http\Controllers\Api\CamerastreamController@cam_request_check');
         Route::post('/get_user_frontcam', 'App\Http\Controllers\Api\CamerastreamController@get_user_frontcam');
         Route::post('/get_user_rearcam', 'App\Http\Controllers\Api\CamerastreamController@get_user_rearcam');
-
+        //Video Stream Controller
+        Route::post('/stream/on_publish', 'App\Http\Controllers\Api\VideostreamController@on_publish');
 
     });
 });
