@@ -44,7 +44,12 @@ Route::group([
         Route::post('/get_user_frontcam', 'App\Http\Controllers\Api\CamerastreamController@get_user_frontcam');
         Route::post('/get_user_rearcam', 'App\Http\Controllers\Api\CamerastreamController@get_user_rearcam');
         //Video Stream Controller
-        Route::post('/stream/on_publish', 'App\Http\Controllers\Api\VideostreamController@on_publish');
 
     });
+});
+
+
+Route::group([
+], function () {
+    Route::post('/stream/on_publish', 'App\Http\Controllers\Api\VideostreamController@on_publish');
 });
