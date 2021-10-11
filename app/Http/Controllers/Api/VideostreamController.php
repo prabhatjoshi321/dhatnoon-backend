@@ -16,4 +16,6 @@ class VideostreamController extends Controller
             return response('No', 400)->header('Content-Type', 'text/plain');
         }
     }
+
+
 }

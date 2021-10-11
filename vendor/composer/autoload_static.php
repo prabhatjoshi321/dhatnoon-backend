@@ -36,6 +36,7 @@ class ComposerStaticInit56a97c6fd095215e299a50a9d5d2b9c1
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         'decc78cc4436b1292c6c0d151b19445c' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
         'b6b991a57620e2fb6b2f66f03fe9ddc2' => __DIR__ . '/..' . '/symfony/string/Resources/functions.php',
+        '3109cb1a231dcd04bee1f9f620d46975' => __DIR__ . '/..' . '/paragonie/sodium_compat/autoload.php',
         'ed962a97bd972bc82007176b647d4e36' => __DIR__ . '/..' . '/facade/ignition/src/helpers.php',
     );
 
@@ -97,6 +98,7 @@ class ComposerStaticInit56a97c6fd095215e299a50a9d5d2b9c1
         ),
         'P' => 
         array (
+            'Pusher\\' => 7,
             'Psy\\' => 4,
             'Psr\\SimpleCache\\' => 16,
             'Psr\\Log\\' => 8,
@@ -346,6 +348,10 @@ class ComposerStaticInit56a97c6fd095215e299a50a9d5d2b9c1
         array (
             0 => __DIR__ . '/..' . '/ramsey/collection/src',
         ),
+        'Pusher\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/pusher/pusher-php-server/src',
+        ),
         'Psy\\' => 
         array (
             0 => __DIR__ . '/..' . '/psy/psysh/src',
@@ -589,7 +595,10 @@ class ComposerStaticInit56a97c6fd095215e299a50a9d5d2b9c1
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
         'App\\Http\\Controllers\\Api\\AudiostreamController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/AudiostreamController.php',
         'App\\Http\\Controllers\\Api\\AuthController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/AuthController.php',
+        'App\\Http\\Controllers\\Api\\CamerastreamController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/CamerastreamController.php',
         'App\\Http\\Controllers\\Api\\LocationController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/LocationController.php',
+        'App\\Http\\Controllers\\Api\\PermissionsController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/PermissionsController.php',
+        'App\\Http\\Controllers\\Api\\VideostreamController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/VideostreamController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
         'App\\Http\\Middleware\\Authenticate' => __DIR__ . '/../..' . '/app/Http/Middleware/Authenticate.php',
@@ -600,11 +609,12 @@ class ComposerStaticInit56a97c6fd095215e299a50a9d5d2b9c1
         'App\\Http\\Middleware\\TrustHosts' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustHosts.php',
         'App\\Http\\Middleware\\TrustProxies' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustProxies.php',
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
+        'App\\Models\\Audiostream' => __DIR__ . '/../..' . '/app/Models/Audiostream.php',
         'App\\Models\\Camerastream' => __DIR__ . '/../..' . '/app/Models/Camerastream.php',
+        'App\\Models\\Location' => __DIR__ . '/../..' . '/app/Models/Location.php',
         'App\\Models\\Permissions' => __DIR__ . '/../..' . '/app/Models/Permissions.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
-        'App\\Models\\audiostream' => __DIR__ . '/../..' . '/app/Models/audiostream.php',
-        'App\\Models\\videostream' => __DIR__ . '/../..' . '/app/Models/videostream.php',
+        'App\\Models\\Videostream' => __DIR__ . '/../..' . '/app/Models/Videostream.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',
         'App\\Providers\\BroadcastServiceProvider' => __DIR__ . '/../..' . '/app/Providers/BroadcastServiceProvider.php',
@@ -722,6 +732,7 @@ class ComposerStaticInit56a97c6fd095215e299a50a9d5d2b9c1
         'Database\\Seeders\\CamerastreamSeeder' => __DIR__ . '/../..' . '/database/seeders/CamerastreamSeeder.php',
         'Database\\Seeders\\DatabaseSeeder' => __DIR__ . '/../..' . '/database/seeders/DatabaseSeeder.php',
         'Database\\Seeders\\LocationSeeder' => __DIR__ . '/../..' . '/database/seeders/LocationSeeder.php',
+        'Database\\Seeders\\PermissionsSeeder' => __DIR__ . '/../..' . '/database/seeders/PermissionsSeeder.php',
         'Database\\Seeders\\VideostreamSeeder' => __DIR__ . '/../..' . '/database/seeders/VideostreamSeeder.php',
         'DeepCopy\\DeepCopy' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/DeepCopy.php',
         'DeepCopy\\Exception\\CloneException' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/Exception/CloneException.php',
@@ -4527,6 +4538,11 @@ class ComposerStaticInit56a97c6fd095215e299a50a9d5d2b9c1
         'Psy\\VersionUpdater\\GitHubChecker' => __DIR__ . '/..' . '/psy/psysh/src/VersionUpdater/GitHubChecker.php',
         'Psy\\VersionUpdater\\IntervalChecker' => __DIR__ . '/..' . '/psy/psysh/src/VersionUpdater/IntervalChecker.php',
         'Psy\\VersionUpdater\\NoopChecker' => __DIR__ . '/..' . '/psy/psysh/src/VersionUpdater/NoopChecker.php',
+        'Pusher\\Pusher' => __DIR__ . '/..' . '/pusher/pusher-php-server/src/Pusher.php',
+        'Pusher\\PusherCrypto' => __DIR__ . '/..' . '/pusher/pusher-php-server/src/PusherCrypto.php',
+        'Pusher\\PusherException' => __DIR__ . '/..' . '/pusher/pusher-php-server/src/PusherException.php',
+        'Pusher\\PusherInstance' => __DIR__ . '/..' . '/pusher/pusher-php-server/src/PusherInstance.php',
+        'Pusher\\Webhook' => __DIR__ . '/..' . '/pusher/pusher-php-server/src/Webhook.php',
         'Ramsey\\Collection\\AbstractArray' => __DIR__ . '/..' . '/ramsey/collection/src/AbstractArray.php',
         'Ramsey\\Collection\\AbstractCollection' => __DIR__ . '/..' . '/ramsey/collection/src/AbstractCollection.php',
         'Ramsey\\Collection\\AbstractSet' => __DIR__ . '/..' . '/ramsey/collection/src/AbstractSet.php',

@@ -49,7 +49,7 @@ Route::group([
 });
 
 
-Route::group([
-], function () {
-    Route::post('/stream/on_publish', 'App\Http\Controllers\Api\VideostreamController@on_publish');
-});
+// Route::group([
+// ], function () {
+//     Route::post('/stream/on_publish', 'App\Http\Controllers\Api\VideostreamController@on_publish');
+// });
