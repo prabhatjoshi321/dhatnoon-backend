@@ -43,7 +43,24 @@ Route::group([
         Route::get('/cam_request_check', 'App\Http\Controllers\Api\CamerastreamController@cam_request_check');
         Route::post('/get_user_frontcam', 'App\Http\Controllers\Api\CamerastreamController@get_user_frontcam');
         Route::post('/get_user_rearcam', 'App\Http\Controllers\Api\CamerastreamController@get_user_rearcam');
+        //Agora token generator
+        // Route::get('/generateToken', 'App\Http\Controllers\Api\AgoraController@generateToken');
         //Video Stream Controller
+        Route::get('/stream_check', 'App\Http\Controllers\Api\VideostreamController@stream_check');
+        Route::post('/get_user_frontstream_start', 'App\Http\Controllers\Api\VideostreamController@get_user_frontstream_start');
+        Route::post('/get_user_frontstream_stop', 'App\Http\Controllers\Api\VideostreamController@get_user_frontstream_stop');
+        Route::post('/get_user_rearstream_start', 'App\Http\Controllers\Api\VideostreamController@get_user_rearstream_start');
+        Route::post('/get_user_rearstream_stop', 'App\Http\Controllers\Api\VideostreamController@get_user_rearstream_stop');
+        //Video Stream 10 sec apis
+        //Audio Stream Controller
+        Route::get('/stream_check_audio', 'App\Http\Controllers\Api\AudiotreamController@stream_check');
+        Route::post('/get_user_audiostream_start', 'App\Http\Controllers\Api\AudiostreamController@get_user_audiostream_start');
+        Route::post('/get_user_sudiostream_stop', 'App\Http\Controllers\Api\AudiostreamController@get_user_audiostream_stop');
+        //Audio Stream 10 sec apis
+        Route::post('/audio10secstream', 'App\Http\Controllers\Api\AudiotreamController@audio10secstream');
+        Route::get('/audio10secstream_request_check', 'App\Http\Controllers\Api\AudiotreamController@audio10secstream_request_check');
+        Route::post('/get_10secaudio', 'App\Http\Controllers\Api\AudiotreamController@get_10secaudio');
+
 
     });
 });

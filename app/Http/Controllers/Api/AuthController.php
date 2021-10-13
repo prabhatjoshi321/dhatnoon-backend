@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\camerastream;
+use App\Models\videostream;
 use App\Models\User;
 use App\Models\location;
 use App\Models\Permissions;
@@ -81,6 +82,22 @@ class AuthController extends Controller
             ]);
             $camera->save();
         }
+        //Streaming table entry creation
+        $user_avail_stream = videostream::where('user_id', $user->id)->first();
+
+        if($user_avail_stream == null){
+            $stream = new videostream([
+                'user_id' => $user->id,
+                'frontcam_request_stream_notifier' => 0,
+                'rearcam_request_stream_notifier' => 0,
+                'frontcam_request_stream' => 0,
+                'rearcam_request_stream' => 0,
+                'agora_channel_name' => '',
+                'agora_token' => '',
+                'agora_rtm_token' => '',
+            ]);
+            $stream->save();
+        }
 
         return response()->json([
             'username' => $user->name,
@@ -89,6 +106,7 @@ class AuthController extends Controller
             'access_token' => $tokenResult->accessToken,
             'loc_check' => $user_avail_loc,
             'cam_check' => $user_avail_cam,
+            'stream_check' => $user_avail_stream,
             'token_type' => 'Bearer',
             'expires_at' => Carbon::parse(
                 $tokenResult->token->expires_at
