@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\camerastream;
 use App\Models\videostream;
-use App\Models\Audiostream;
+use App\Models\audiostream;
 use App\Models\User;
 use App\Models\location;
 use App\Models\Permissions;
