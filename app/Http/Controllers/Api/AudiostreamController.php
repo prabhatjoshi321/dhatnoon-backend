@@ -13,6 +13,12 @@ use App\Models\Permissions;
 use Carbon\Carbon;
 use Auth;
 
+//Agora Services
+use App\Services\AgoraService;
+use Webpatser\Uuid\Uuid;
+use Exception;
+//End Agora services
+
 class AudiostreamController extends Controller
 {
 
@@ -23,110 +29,14 @@ class AudiostreamController extends Controller
     {
         $this->agoraService = app(AgoraService::class);
     }
-    //Agora initialization components end
-
-    // public function on_publish(Request $request)
-    // {
-    //     if ($request->name == "mystream") {
-    //         return response('Good', 200)->header('Content-Type', 'text/plain');
-    //     } else {
-    //         return response('No', 400)->header('Content-Type', 'text/plain');
-    //     }
-    // }
-
-    public function stream_check()
-    {
-        $mic = Audiostream::where('user_id', Auth::user()->id)->first();
-        $mic_notifier = $mic;
-        $mic->request_audiostream_notifier = 0;
-        $mic->save();
-        return response()->json([
-            'request_audiostream_notifier' => $mic_notifier->request_audiostream_notifier,
-            'request_audiostream' => $mic_notifier->request_audiostream,
-            'agora_channel_name' => $mic_notifier->agora_channel_name,
-            'agora_token' => $mic_notifier->agora_token,
-            'agora_rtm_token' => $mic_notifier->agora_rtm_token,
-            'message' => 'Successfully got stream credentials for camera stream.'
-        ], 201);
-    }
-
-
-
-
-    public function get_user_audiostream_start(Request $request)
-    {
-        $request->validate([
-            'user_id' => 'required',
-        ]);
-        $perms = Permissions::where([['requester_id', '=', Auth::user()->id], ['user_id', '=', $request->user_id]])->first();
-        if ($perms === null) {
-            return response()->json([
-                'data' => 'user not found or permissions not given'
-            ], 400);
-        }
-        if ($perms->request_audstream_dayaccess) {
-            $requester = User::where('id', $perms->user_id)->first();
-            $mic = Audiostream::where('user_id', $requester->id)->first();
-            $time_start = date('Y-m-d', strtotime($perms->request_audstream_starttime));
-            $time_end = date('Y-m-d', strtotime($perms->request_audstream_endtime));
-            if ($time_start === Carbon::today('Asia/Kolkata')->toDateString() && $time_end === Carbon::today('Asia/Kolkata')->toDateString()) {
-                $tokens = generateToken();
-                $mic->request_audiostream = 1;
-                $mic->request_audiostream_notifier = 1;
-                $mic->agora_channel_name = $tokens->channel_name;
-                $mic->agora_token = $tokens->token;
-                $mic->agora_rtm_token = $tokens->rtm_token;
-                $mic->save();
-                return response()->json([
-                    'channel_name' => $tokens->channel_name,
-                    'token' => $tokens->token,
-                    'rtm_token' =>  $tokens->rtm_token,
-                    'message' => 'Frontcam Stream Started',
-                ], 200);
-            }
-        } else {
-            return response()->json([
-                'message' => 'No Access given for today',
-            ], 200);
-        }
-    }
-
-    public function get_user_audiostream_stop(Request $request)
-    {
-        $request->validate([
-            'user_id' => 'required',
-        ]);
-        $perms = Permissions::where([['requester_id', '=', Auth::user()->id], ['user_id', '=', $request->user_id]])->first();
-        if ($perms === null) {
-            return response()->json([
-                'data' => 'user not found or permissions not given'
-            ], 400);
-        }
-        if ($perms->request_audstream_dayaccess) {
-            $requester = User::where('id', $perms->user_id)->first();
-            $mic = Audiostream::where('user_id', $requester->id)->first();
-            $time_start = date('Y-m-d', strtotime($perms->request_audstream_starttime));
-            $time_end = date('Y-m-d', strtotime($perms->request_audstream_endtime));
-            if ($time_start === Carbon::today('Asia/Kolkata')->toDateString() && $time_end === Carbon::today('Asia/Kolkata')->toDateString()) {
-                $mic->request_audiostream = 0;
-                $mic->save();
-                return response()->json([
-                    'message' => 'Frontcam Stream Stopped',
-                ], 200);
-            }
-        } else {
-            return response()->json([
-                'message' => 'No Access given for today',
-            ], 200);
-        }
-    }
     //
     //
     //
-    //
-    //Agora functions
-    public function generateToken()
+    // New functions
+
+    public function token_generate_save()
     {
+        $camera = Audiostream::where('user_id', Auth::user()->id)->first();
         try {
             $channelName = (string) Uuid::generate(4);
             $token = $this->agoraService->getRtcToken($channelName);
@@ -136,52 +46,108 @@ class AudiostreamController extends Controller
                     'message' => 'Generate token error',
                 ], 400);
             }
-            $data = [
-                'channel_name' => $channelName,
-                'token' => $token,
-                'rtm_token' => $rtmToken,
-            ];
-            return $data;
+            $camera->agora_channel_name = $channelName;
+            $camera->agora_token = $token;
+            $camera->agora_rtm_token = $rtmToken;
+            $camera->save();
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'err',
                 'error' => $e->getMessage()
             ], 400);
         }
-    }
-    //Agora functions end
-    //
-    //
-    //
-    //
-    public function audio10secstream(Request $request){
-        $audio = audiostream::where('user_id', Auth::user()->id)->first();
-        $audio->request_audiostream10sec_notifier = 0;
-
-        if ($request->hasFile('audio')) {
-
-            $path = $request->file('audio')->store('public/audio');
-            //path corrector
-            $string = str_ireplace("public", "storage", $path);
-            $audio->audiostream_url = $string;
-        }
-        $audio->save();
         return response()->json([
-            'data' => $audio,
-            'message' => 'Successfully saved Front Cam Pic of user.'
-        ], 201);
+            'channel_name' => $channelName,
+            'token' => $token,
+            'rtm_token' => $rtmToken,
+        ], 200);
     }
 
-    public function audio10secstream_request_check()
+
+    public function call_user_audio(Request $request)
     {
-        $camera = audiostream::where('user_id', Auth::user()->id)->first();
-            return response()->json([
-                'aud_req' => $camera->request_audiostream10sec_notifier,
-            ], 200);
-
+        $request->validate([
+            'user_id' => 'required',
+        ]);
+        $perms = Permissions::where([['requester_id', '=', Auth::user()->id], ['user_id', '=', $request->user_id]])->first();
+        $perms->request_audstream_flag = 1;
+        $perms->new_flag = 1;
+        $perms->save();
+        return response()->json([
+            'data' => 'Called user audio stream.'
+        ], 400);
     }
 
-    public Function get_10secaudio(Request $request){
+    public function start_user_audio(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required',
+        ]);
+        $perms = Permissions::where([['requester_id', '=', Auth::user()->id], ['user_id', '=', $request->user_id]])->first();
+        if ($perms === null) {
+            return response()->json([
+                'data' => 'user not found or permissions not given'
+            ], 400);
+        }
+        if ($perms->request_audstream_dayaccess) {
+            $requester = User::where('id', $perms->user_id)->first();
+            $stream = Audiostream::where('user_id', $requester->id)->first();
+            $time_start = date('Y-m-d', strtotime($perms->request_audstream_starttime));
+            $time_end = date('Y-m-d', strtotime($perms->request_audstream_endtime));
+            if ($time_start === Carbon::today('Asia/Kolkata')->toDateString() && $time_end === Carbon::today('Asia/Kolkata')->toDateString()) {
+                return response()->json([
+                    'channel_name' => $stream->agora_channel_name,
+                    'token' => $stream->agora_token,
+                    'rtm_token' => $stream->agora_rtm_token,
+                    'message' => 'Started user audio stream.'
+                ], 200);
+            } else {
+                return response()->json([
+                    'data' => 'Permissions not given'
+                ], 400);
+            }
+            return response()->json([
+                'data' => 'Permissions not given.'
+            ], 400);
+        }
+    }
+
+    public function stop_user_audio(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required',
+        ]);
+        $perms = Permissions::where([['requester_id', '=', Auth::user()->id], ['user_id', '=', $request->user_id]])->first();
+        if ($perms === null) {
+            return response()->json([
+                'data' => 'user not found or permissions not given'
+            ], 400);
+        }
+        $perms->request_audstream_flag = 0;
+        $perms->save();
+        return response()->json([
+            'message' => 'Stopped user audio stream.'
+        ], 200);
+    }
+
+    //10 second
+
+    public function call_user_audio10(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required',
+        ]);
+        $perms = Permissions::where([['requester_id', '=', Auth::user()->id], ['user_id', '=', $request->user_id]])->first();
+        $perms->request_aud10secrec_flag = 1;
+        $perms->new_flag = 1;
+        $perms->save();
+        return response()->json([
+            'data' => 'Called user Audio.'
+        ], 400);
+    }
+
+    public function start_user_audio10(Request $request)
+    {
         $request->validate([
             'user_id' => 'required',
         ]);
@@ -193,23 +159,42 @@ class AudiostreamController extends Controller
         }
         if ($perms->request_aud10secrec_dayaccess) {
             $requester = User::where('id', $perms->user_id)->first();
-            $mic = audiostream::where('user_id', $requester->id)->first();
-            $mic->request_audiostream10sec_notifier = 1;
-            $mic->save();
-            sleep(10);
-            $mic->request_audiostream10sec_notifier = 0;
-            $mic->save();
-
-
+            $stream = Audiostream::where('user_id', $requester->id)->first();
             $time_start = date('Y-m-d', strtotime($perms->request_aud10secrec_starttime));
             $time_end = date('Y-m-d', strtotime($perms->request_aud10secrec_endtime));
-
             if ($time_start === Carbon::today('Asia/Kolkata')->toDateString() && $time_end === Carbon::today('Asia/Kolkata')->toDateString()) {
                 return response()->json([
-                    'url' => $mic->audiostream_url,
+                    'channel_name' => $stream->agora_channel_name,
+                    'token' => $stream->agora_token,
+                    'rtm_token' => $stream->agora_rtm_token,
+                    'message' => 'Started user audio stream for 10 seconds.'
                 ], 200);
+            } else {
+                return response()->json([
+                    'data' => 'Permissions not given'
+                ], 400);
             }
+            return response()->json([
+                'data' => 'Permissions not given.'
+            ], 400);
         }
     }
 
+    public function stop_user_audio10(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required',
+        ]);
+        $perms = Permissions::where([['requester_id', '=', Auth::user()->id], ['user_id', '=', $request->user_id]])->first();
+        if ($perms === null) {
+            return response()->json([
+                'data' => 'user not found or permissions not given'
+            ], 400);
+        }
+        $perms->request_aud10secrec_flag = 0;
+        $perms->save();
+        return response()->json([
+            'message' => 'Stopped user 10 second audio stream.'
+        ], 200);
+    }
 }

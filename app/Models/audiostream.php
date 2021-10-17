@@ -13,11 +13,8 @@ class Audiostream extends Model
 
     protected $fillable = [
         'user_id',
-        'request_audiostream_notifier',
-        'request_audiostream',
         'agora_channel_name',
         'agora_token',
         'agora_rtm_token',
-        'audiostream_url',
     ];
 }

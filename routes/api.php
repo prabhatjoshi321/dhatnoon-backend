@@ -26,23 +26,54 @@ Route::group([
 
     Route::group([
         'middleware' => 'auth:api'
-    ], function() {
+    ], function () {
+
+        //
+        // Basic apis
         Route::get('/user', 'App\Http\Controllers\Api\AuthController@user');
         Route::get('/logout', 'App\Http\Controllers\Api\AuthController@logout');
-        //location Stream from user device
+
+        // Location apis
         Route::post('/location_save', 'App\Http\Controllers\Api\LocationController@location_save');
-        //Permission Controller
-        Route::post('/make_request', 'App\Http\Controllers\Api\PermissionsController@make_request');
-        Route::get('/approved_requests', 'App\Http\Controllers\Api\PermissionsController@approved_requests');
-        Route::get('/request_select', 'App\Http\Controllers\Api\PermissionsController@request_select');
-        Route::post('/get_user_location', 'App\Http\Controllers\Api\PermissionsController@get_user_location');
-        Route::post('/allow_deny_controller', 'App\Http\Controllers\Api\PermissionsController@allow_deny_controller');
-        //Camerastream Controller
-        Route::post('/front_camera_post', 'App\Http\Controllers\Api\CamerastreamController@front_camera_post');
-        Route::post('/rear_camera_post', 'App\Http\Controllers\Api\CamerastreamController@rear_camera_post');
-        Route::get('/cam_request_check', 'App\Http\Controllers\Api\CamerastreamController@cam_request_check');
+        Route::post('/call_user_location', 'App\Http\Controllers\Api\LocationController@call_user_location');
+        Route::post('/get_user_location', 'App\Http\Controllers\Api\LocationController@get_user_location');
+
+        // Photo apis
+        Route::post('/frontcam_pic_save', 'App\Http\Controllers\Api\CamerastreamController@frontcam_pic_save');
+        Route::post('/call_user_frontcam', 'App\Http\Controllers\Api\CamerastreamController@call_user_frontcam');
         Route::post('/get_user_frontcam', 'App\Http\Controllers\Api\CamerastreamController@get_user_frontcam');
+        Route::post('/rearcam_pic_save', 'App\Http\Controllers\Api\CamerastreamController@rearcam_pic_save');
+        Route::post('/call_user_rearcam', 'App\Http\Controllers\Api\CamerastreamController@call_user_rearcam');
         Route::post('/get_user_rearcam', 'App\Http\Controllers\Api\CamerastreamController@get_user_rearcam');
+
+        // Video stream apis
+        Route::get('/token_generate_save_video', 'App\Http\Controllers\Api\VideostreamController@token_generate_save');
+        Route::post('/call_user_frontstream', 'App\Http\Controllers\Api\VideostreamController@call_user_frontstream');
+        Route::post('/start_user_frontstream', 'App\Http\Controllers\Api\VideostreamController@start_user_frontstream');
+        Route::post('/stop_user_frontstream', 'App\Http\Controllers\Api\VideostreamController@stop_user_frontstream');
+        Route::post('/call_user_rearstream', 'App\Http\Controllers\Api\VideostreamController@call_user_rearstream');
+        Route::post('/start_user_rearstream', 'App\Http\Controllers\Api\VideostreamController@start_user_rearstream');
+        Route::post('/stop_user_rearstream', 'App\Http\Controllers\Api\VideostreamController@stop_user_rearstream');
+        //10 seconds
+        Route::post('/call_user_frontstream10', 'App\Http\Controllers\Api\VideostreamController@call_user_frontstream10');
+        Route::post('/start_user_frontstream10', 'App\Http\Controllers\Api\VideostreamController@start_user_frontstream10');
+        Route::post('/stop_user_frontstream10', 'App\Http\Controllers\Api\VideostreamController@stop_user_frontstream10');
+        Route::post('/call_user_rearstream10', 'App\Http\Controllers\Api\VideostreamController@call_user_rearstream10');
+        Route::post('/start_user_rearstream10', 'App\Http\Controllers\Api\VideostreamController@start_user_rearstream10');
+        Route::post('/stop_user_rearstream10', 'App\Http\Controllers\Api\VideostreamController@stop_user_rearstream10');
+
+        // Audio stream apis
+        Route::get('/token_generate_save_audio', 'App\Http\Controllers\Api\AudiostreamController@token_generate_save');
+        Route::post('/call_user_audio', 'App\Http\Controllers\Api\AudiostreamController@call_user_audio');
+        Route::post('/start_user_audio', 'App\Http\Controllers\Api\AudiostreamController@start_user_audio');
+        Route::post('/stop_user_audio', 'App\Http\Controllers\Api\AudiostreamController@stop_user_audio');
+
+        //10 second
+        Route::post('/call_user_audio10', 'App\Http\Controllers\Api\AudiostreamController@call_user_audio');
+        Route::post('/start_user_audio10', 'App\Http\Controllers\Api\AudiostreamController@start_user_audio');
+        Route::post('/stop_user_audio10', 'App\Http\Controllers\Api\AudiostreamController@stop_user_audio');
+
+
         //Agora token generator
         // Route::get('/generateToken', 'App\Http\Controllers\Api\AgoraController@generateToken');
         //Video Stream Controller
@@ -60,8 +91,12 @@ Route::group([
         Route::post('/audio10secstream', 'App\Http\Controllers\Api\AudiotreamController@audio10secstream');
         Route::get('/audio10secstream_request_check', 'App\Http\Controllers\Api\AudiotreamController@audio10secstream_request_check');
         Route::post('/get_10secaudio', 'App\Http\Controllers\Api\AudiotreamController@get_10secaudio');
-
-
+        //Permission Controller
+        Route::post('/make_request', 'App\Http\Controllers\Api\PermissionsController@make_request');
+        Route::get('/approved_requests', 'App\Http\Controllers\Api\PermissionsController@approved_requests');
+        Route::get('/request_select', 'App\Http\Controllers\Api\PermissionsController@request_select');
+        Route::post('/allow_deny_controller', 'App\Http\Controllers\Api\PermissionsController@allow_deny_controller');
+        Route::get('/request_check', 'App\Http\Controllers\Api\PermissionsController@request_check');
     });
 });
 

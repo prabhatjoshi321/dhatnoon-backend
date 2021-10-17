@@ -12,10 +12,6 @@ class Videostream extends Model
 
     protected $fillable = [
         'user_id',
-        'frontcam_request_stream_notifier',
-        'rearcam_request_stream_notifier',
-        'frontcam_request_stream',
-        'rearcam_request_stream',
         'agora_channel_name',
         'agora_token',
         'agora_rtm_token',

@@ -14,7 +14,5 @@ class Camerastream extends Model
         'user_id',
         'frontcam_pic',
         'rearcam_pic',
-        'frontcam_request',
-        'rearcam_request'
     ];
 }

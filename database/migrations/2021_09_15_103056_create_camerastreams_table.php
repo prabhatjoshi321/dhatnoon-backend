@@ -18,8 +18,6 @@ class CreateCamerastreamsTable extends Migration
             $table->string('user_id');
             $table->string('frontcam_pic');
             $table->string('rearcam_pic');
-            $table->boolean('frontcam_request');
-            $table->boolean('rearcam_request');
             $table->timestamps();
         });
     }

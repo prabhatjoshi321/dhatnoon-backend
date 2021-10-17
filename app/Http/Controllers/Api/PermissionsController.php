@@ -13,6 +13,109 @@ use PhpParser\Node\Expr\Cast\String_;
 
 class PermissionsController extends Controller
 {
+    public function request_check()
+    {
+        $stream_param = Permissions::where('user_id', Auth::user()->id)->first();
+        $data = Permissions::where([['user_id', '=', Auth::user()->id], ['new_flag', '=', 1]])->first();
+
+        $fcam_stream = null;
+        $bcam_stream = null;
+        $fcam10_vid = null;
+        $bcam10_vid = null;
+        $aud_stream = null;
+        $aud_10sec = null;
+        if ($stream_param != null) {
+            $fcam_stream = $stream_param->request_fcamstream_flag;
+            $bcam_stream = $stream_param->request_bcamstream_flag;
+            $fcam10_vid = $stream_param->request_fcam10secvid_flag;
+            $bcam10_vid = $stream_param->request_bcam10secvid_flag;
+            $aud_stream = $stream_param->request_audstream_flag;
+            $aud_10sec = $stream_param->request_aud10secrec_flag;
+        }
+        if ($data == null) {
+            return response()->json([
+                'message' => 'no requests',
+                'feature_id' => 10,
+                //stream start stop flags
+                'fcam_stream' => $fcam_stream,
+                'bcam_stream' => $bcam_stream,
+                'fcam10_vid' => $fcam10_vid,
+                'bcam10_vid' => $bcam10_vid,
+                'aud_stream' => $aud_stream,
+                'aud_10sec' => $aud_10sec,
+            ], 200);
+        }
+
+        $requester = User::where('id', $data->requester_id)->first();
+        $data->new_flag = 0;
+        $data->save();
+
+        if ($data->request_geoloc_flag) {
+
+            return response()->json([
+                'requester' => $requester->name,
+                'message' => ' is viewing your location.',
+                'feature_id' => 1,
+            ], 200);
+        }
+        if ($data->request_fcampic_flag) {
+            return response()->json([
+                'requester' => $requester->name,
+                'message' =>  ' is viewing your front camera pic.',
+                'feature_id' => 2,
+            ], 200);
+        }
+        if ($data->request_bcampic_flag) {
+            return response()->json([
+                'requester' => $requester->name,
+                'message' =>  ' is viewing your rear camera pic.',
+                'feature_id' => 3,
+            ], 200);
+        }
+        if ($data->request_fcamstream_flag) {
+            return response()->json([
+                'requester' => $requester->name,
+                'message' => ' is streaming your front camera.',
+                'feature_id' => 4,
+            ], 200);
+        }
+        if ($data->request_bcamstream_flag) {
+            return response()->json([
+                'requester' => $requester->name,
+                'message' => ' is streaming your rear camera.',
+                'feature_id' => 5,
+            ], 200);
+        }
+        if ($data->request_fcam10secvid_flag) {
+            return response()->json([
+                'requester' => $requester->name,
+                'message' =>  ' is viewing 10 second video fron your front camera.',
+                'feature_id' => 6,
+            ], 200);
+        }
+        if ($data->request_bcam10secvid_flag) {
+            return response()->json([
+                'requester' => $requester->name,
+                'message' =>  ' is viewing 10 second video fron your rear camera.',
+                'feature_id' => 7,
+            ], 200);
+        }
+        if ($data->request_audstream_flag) {
+            return response()->json([
+                'requester' => $requester->name,
+                'message' =>  ' is listening to your mic.',
+                'feature_id' => 8,
+            ], 200);
+        }
+        if ($data->request_aud10secrec_flag) {
+            return response()->json([
+                'requester' => $requester->name,
+                'message' =>  ' is listening to 10 second audio fron your mic.',
+                'feature_id' => 9,
+            ], 200);
+        }
+    }
+
     public function make_request(Request $request)
     {
         $request->validate([
@@ -209,7 +312,6 @@ class PermissionsController extends Controller
             }
         } else {
             //Permission Logic for existing requests
-
 
             //Geolocation
             if ($request->selected_option === 'Live Geo Location.') {
@@ -496,173 +598,149 @@ class PermissionsController extends Controller
 
         foreach ($json_decoded as $item) {
 
-                $requester = User::where('id', $item->requester_id)->first();
-                $time_start = date('Y-m-d', strtotime($item->request_geoloc_starttime));
-                $time_end = date('Y-m-d', strtotime($item->request_geoloc_endtime));
-                if ($time_start === Carbon::today('Asia/Kolkata')->toDateString() && $time_end === Carbon::today('Asia/Kolkata')->toDateString()) {
-                    $data_arranged[] = [
-                        'permisssion_id' =>  $item->id,
-                        'feature' => 'Live Geo Location',
-                        'feature_id' => 1,
-                        'requester_name' => $requester->name,
-                        'requester_phno' => $requester->phone_number,
-                        'start_time' => $item->request_geoloc_starttime,
-                        'end_time' => $item->request_geoloc_endtime,
-                        'end_time' => $item->request_geoloc_endtime,
-                        'day_access' => $item->request_geoloc_dayaccess,
-                    ];
-                }
-                $requester = User::where('id', $item->requester_id)->first();
-                $time_start = date('Y-m-d', strtotime($item->request_fcampic_starttime));
-                $time_end = date('Y-m-d', strtotime($item->request_fcampic_endtime));
-                if ($time_start === Carbon::today('Asia/Kolkata')->toDateString() && $time_end === Carbon::today('Asia/Kolkata')->toDateString()) {
-                    $data_arranged[] = [
-                        'permission_id' => $item->id,
-                        'feature' => 'Front Camera Pic',
-                        'feature_id' => 2,
-                        'requester_name' => $requester->name,
-                        'requester_phno' => $requester->phone_number,
-                        'start_time' => $item->request_fcampic_starttime,
-                        'end_time' => $item->request_fcampic_endtime,
-                        'day_access' => $item->request_fcampic_dayaccess,
-                    ];
-                }
-                $requester = User::where('id', $item->requester_id)->first();
-                $time_start = date('Y-m-d', strtotime($item->request_bcampic_starttime));
-                $time_end = date('Y-m-d', strtotime($item->request_bcampic_endtime));
-                if ($time_start === Carbon::today('Asia/Kolkata')->toDateString() && $time_end === Carbon::today('Asia/Kolkata')->toDateString()) {
-                    $data_arranged[] = [
-                        'permission_id' => $item->id,
-                        'feature' => 'Back Camera Pic',
-                        'feature_id' => 3,
-                        'requester_name' => $requester->name,
-                        'requester_phno' => $requester->phone_number,
-                        'start_time' => $item->request_bcampic_starttime,
-                        'end_time' => $item->request_bcampic_endtime,
-                        'day_access' => $item->request_bcampic_dayaccess,
-                    ];
-                }
-                $requester = User::where('id', $item->requester_id)->first();
-                $time_start = date('Y-m-d', strtotime($item->request_fcamstream_starttime));
-                $time_end = date('Y-m-d', strtotime($item->request_fcamstream_endtime));
-                if ($time_start === Carbon::today('Asia/Kolkata')->toDateString() && $time_end === Carbon::today('Asia/Kolkata')->toDateString()) {
-                    $data_arranged[] = [
-                        'permission_id' => $item->id,
-                        'feature' => 'Front Camera Streaming',
-                        'feature_id' => 4,
-                        'requester_name' => $requester->name,
-                        'requester_phno' => $requester->phone_number,
-                        'start_time' => $item->request_fcamstream_starttime,
-                        'end_time' => $item->request_fcamstream_endtime,
-                        'day_access' => $item->request_fcamstream_dayaccess,
-                    ];
-                }
-                $requester = User::where('id', $item->requester_id)->first();
-                $time_start = date('Y-m-d', strtotime($item->request_bcamstream_starttime));
-                $time_end = date('Y-m-d', strtotime($item->request_bcamstream_endtime));
-                if ($time_start === Carbon::today('Asia/Kolkata')->toDateString() && $time_end === Carbon::today('Asia/Kolkata')->toDateString()) {
-                    $data_arranged[] = [
-                        'permission_id' => $item->id,
-                        'feature' => 'Back Camera Streaming',
-                        'feature_id' => 5,
-                        'requester_name' => $requester->name,
-                        'requester_phno' => $requester->phone_number,
-                        'start_time' => $item->request_bcamstream_starttime,
-                        'end_time' => $item->request_bcamstream_endtime,
-                        'day_access' => $item->request_bcamstream_dayaccess,
-                    ];
-                }
-                $requester = User::where('id', $item->requester_id)->first();
-                $time_start = date('Y-m-d', strtotime($item->request_fcam10secvid_starttime));
-                $time_end = date('Y-m-d', strtotime($item->request_fcam10secvid_endtime));
-                if ($time_start === Carbon::today('Asia/Kolkata')->toDateString() && $time_end === Carbon::today('Asia/Kolkata')->toDateString()) {
-                    $data_arranged[] = [
-                        'permission_id' => $item->id,
-                        'feature' => 'Front Camera 10 Second Video',
-                        'feature_id' => 6,
-                        'requester_name' => $requester->name,
-                        'requester_phno' => $requester->phone_number,
-                        'start_time' => $item->request_fcam10secvid_starttime,
-                        'end_time' => $item->request_fcam10secvid_endtime,
-                        'day_access' => $item->request_fcam10secvid_dayaccess,
-                    ];
-                }
-                $requester = User::where('id', $item->requester_id)->first();
-                $time_start = date('Y-m-d', strtotime($item->request_bcam10secvid_starttime));
-                $time_end = date('Y-m-d', strtotime($item->request_bcam10secvid_endtime));
-                if ($time_start === Carbon::today('Asia/Kolkata')->toDateString() && $time_end === Carbon::today('Asia/Kolkata')->toDateString()) {
-                    $data_arranged[] = [
-                        'permission_id' => $item->id,
-                        'feature' => 'Back camera 10 Second Video',
-                        'feature_id' => 7,
-                        'requester_name' => $requester->name,
-                        'requester_phno' => $requester->phone_number,
-                        'start_time' => $item->request_bcam10secvid_starttime,
-                        'end_time' => $item->request_bcam10secvid_endtime,
-                        'day_access' => $item->request_bcam10secvid_dayaccess,
-                    ];
-                }
-                $requester = User::where('id', $item->requester_id)->first();
-                $time_start = date('Y-m-d', strtotime($item->request_audstream_starttime));
-                $time_end = date('Y-m-d', strtotime($item->request_audstream_endtime));
-                if ($time_start === Carbon::today('Asia/Kolkata')->toDateString() && $time_end === Carbon::today('Asia/Kolkata')->toDateString()) {
-                    $data_arranged[] = [
-                        'permission_id' => $item->id,
-                        'feature' => 'Audio Live Streaming',
-                        'feature_id' => 8,
-                        'requester_name' => $requester->name,
-                        'requester_phno' => $requester->phone_number,
-                        'start_time' => $item->request_audstream_starttime,
-                        'end_time' => $item->request_audstream_endtime,
-                        'day_access' => $item->request_audstream_dayaccess,
-                    ];
-                }
-                $requester = User::where('id', $item->requester_id)->first();
-                $time_start = date('Y-m-d', strtotime($item->request_aud10secrec_starttime));
-                $time_end = date('Y-m-d', strtotime($item->request_aud10secrec_endtime));
-                if ($time_start === Carbon::today('Asia/Kolkata')->toDateString() && $time_end === Carbon::today('Asia/Kolkata')->toDateString()) {
-                    $data_arranged[] = [
-                        'permission_id' => $item->id,
-                        'feature' => '10 Second Audio Recording',
-                        'feature_id' => 9,
-                        'requester_name' => $requester->name,
-                        'requester_phno' => $requester->phone_number,
-                        'start_time' => $item->request_aud10secrec_starttime,
-                        'end_time' => $item->request_aud10secrec_endtime,
-                        'day_access' => $item->request_aud10secrec_dayaccess,
-                    ];
-                }
+            $requester = User::where('id', $item->requester_id)->first();
+            $time_start = date('Y-m-d', strtotime($item->request_geoloc_starttime));
+            $time_end = date('Y-m-d', strtotime($item->request_geoloc_endtime));
+            if ($time_start === Carbon::today('Asia/Kolkata')->toDateString() && $time_end === Carbon::today('Asia/Kolkata')->toDateString()) {
+                $data_arranged[] = [
+                    'permisssion_id' =>  $item->id,
+                    'feature' => 'Live Geo Location',
+                    'feature_id' => 1,
+                    'requester_name' => $requester->name,
+                    'requester_phno' => $requester->phone_number,
+                    'start_time' => $item->request_geoloc_starttime,
+                    'end_time' => $item->request_geoloc_endtime,
+                    'end_time' => $item->request_geoloc_endtime,
+                    'day_access' => $item->request_geoloc_dayaccess,
+                ];
+            }
+            $requester = User::where('id', $item->requester_id)->first();
+            $time_start = date('Y-m-d', strtotime($item->request_fcampic_starttime));
+            $time_end = date('Y-m-d', strtotime($item->request_fcampic_endtime));
+            if ($time_start === Carbon::today('Asia/Kolkata')->toDateString() && $time_end === Carbon::today('Asia/Kolkata')->toDateString()) {
+                $data_arranged[] = [
+                    'permission_id' => $item->id,
+                    'feature' => 'Front Camera Pic',
+                    'feature_id' => 2,
+                    'requester_name' => $requester->name,
+                    'requester_phno' => $requester->phone_number,
+                    'start_time' => $item->request_fcampic_starttime,
+                    'end_time' => $item->request_fcampic_endtime,
+                    'day_access' => $item->request_fcampic_dayaccess,
+                ];
+            }
+            $requester = User::where('id', $item->requester_id)->first();
+            $time_start = date('Y-m-d', strtotime($item->request_bcampic_starttime));
+            $time_end = date('Y-m-d', strtotime($item->request_bcampic_endtime));
+            if ($time_start === Carbon::today('Asia/Kolkata')->toDateString() && $time_end === Carbon::today('Asia/Kolkata')->toDateString()) {
+                $data_arranged[] = [
+                    'permission_id' => $item->id,
+                    'feature' => 'Back Camera Pic',
+                    'feature_id' => 3,
+                    'requester_name' => $requester->name,
+                    'requester_phno' => $requester->phone_number,
+                    'start_time' => $item->request_bcampic_starttime,
+                    'end_time' => $item->request_bcampic_endtime,
+                    'day_access' => $item->request_bcampic_dayaccess,
+                ];
+            }
+            $requester = User::where('id', $item->requester_id)->first();
+            $time_start = date('Y-m-d', strtotime($item->request_fcamstream_starttime));
+            $time_end = date('Y-m-d', strtotime($item->request_fcamstream_endtime));
+            if ($time_start === Carbon::today('Asia/Kolkata')->toDateString() && $time_end === Carbon::today('Asia/Kolkata')->toDateString()) {
+                $data_arranged[] = [
+                    'permission_id' => $item->id,
+                    'feature' => 'Front Camera Streaming',
+                    'feature_id' => 4,
+                    'requester_name' => $requester->name,
+                    'requester_phno' => $requester->phone_number,
+                    'start_time' => $item->request_fcamstream_starttime,
+                    'end_time' => $item->request_fcamstream_endtime,
+                    'day_access' => $item->request_fcamstream_dayaccess,
+                ];
+            }
+            $requester = User::where('id', $item->requester_id)->first();
+            $time_start = date('Y-m-d', strtotime($item->request_bcamstream_starttime));
+            $time_end = date('Y-m-d', strtotime($item->request_bcamstream_endtime));
+            if ($time_start === Carbon::today('Asia/Kolkata')->toDateString() && $time_end === Carbon::today('Asia/Kolkata')->toDateString()) {
+                $data_arranged[] = [
+                    'permission_id' => $item->id,
+                    'feature' => 'Back Camera Streaming',
+                    'feature_id' => 5,
+                    'requester_name' => $requester->name,
+                    'requester_phno' => $requester->phone_number,
+                    'start_time' => $item->request_bcamstream_starttime,
+                    'end_time' => $item->request_bcamstream_endtime,
+                    'day_access' => $item->request_bcamstream_dayaccess,
+                ];
+            }
+            $requester = User::where('id', $item->requester_id)->first();
+            $time_start = date('Y-m-d', strtotime($item->request_fcam10secvid_starttime));
+            $time_end = date('Y-m-d', strtotime($item->request_fcam10secvid_endtime));
+            if ($time_start === Carbon::today('Asia/Kolkata')->toDateString() && $time_end === Carbon::today('Asia/Kolkata')->toDateString()) {
+                $data_arranged[] = [
+                    'permission_id' => $item->id,
+                    'feature' => 'Front Camera 10 Second Video',
+                    'feature_id' => 6,
+                    'requester_name' => $requester->name,
+                    'requester_phno' => $requester->phone_number,
+                    'start_time' => $item->request_fcam10secvid_starttime,
+                    'end_time' => $item->request_fcam10secvid_endtime,
+                    'day_access' => $item->request_fcam10secvid_dayaccess,
+                ];
+            }
+            $requester = User::where('id', $item->requester_id)->first();
+            $time_start = date('Y-m-d', strtotime($item->request_bcam10secvid_starttime));
+            $time_end = date('Y-m-d', strtotime($item->request_bcam10secvid_endtime));
+            if ($time_start === Carbon::today('Asia/Kolkata')->toDateString() && $time_end === Carbon::today('Asia/Kolkata')->toDateString()) {
+                $data_arranged[] = [
+                    'permission_id' => $item->id,
+                    'feature' => 'Back camera 10 Second Video',
+                    'feature_id' => 7,
+                    'requester_name' => $requester->name,
+                    'requester_phno' => $requester->phone_number,
+                    'start_time' => $item->request_bcam10secvid_starttime,
+                    'end_time' => $item->request_bcam10secvid_endtime,
+                    'day_access' => $item->request_bcam10secvid_dayaccess,
+                ];
+            }
+            $requester = User::where('id', $item->requester_id)->first();
+            $time_start = date('Y-m-d', strtotime($item->request_audstream_starttime));
+            $time_end = date('Y-m-d', strtotime($item->request_audstream_endtime));
+            if ($time_start === Carbon::today('Asia/Kolkata')->toDateString() && $time_end === Carbon::today('Asia/Kolkata')->toDateString()) {
+                $data_arranged[] = [
+                    'permission_id' => $item->id,
+                    'feature' => 'Audio Live Streaming',
+                    'feature_id' => 8,
+                    'requester_name' => $requester->name,
+                    'requester_phno' => $requester->phone_number,
+                    'start_time' => $item->request_audstream_starttime,
+                    'end_time' => $item->request_audstream_endtime,
+                    'day_access' => $item->request_audstream_dayaccess,
+                ];
+            }
+            $requester = User::where('id', $item->requester_id)->first();
+            $time_start = date('Y-m-d', strtotime($item->request_aud10secrec_starttime));
+            $time_end = date('Y-m-d', strtotime($item->request_aud10secrec_endtime));
+            if ($time_start === Carbon::today('Asia/Kolkata')->toDateString() && $time_end === Carbon::today('Asia/Kolkata')->toDateString()) {
+                $data_arranged[] = [
+                    'permission_id' => $item->id,
+                    'feature' => '10 Second Audio Recording',
+                    'feature_id' => 9,
+                    'requester_name' => $requester->name,
+                    'requester_phno' => $requester->phone_number,
+                    'start_time' => $item->request_aud10secrec_starttime,
+                    'end_time' => $item->request_aud10secrec_endtime,
+                    'day_access' => $item->request_aud10secrec_dayaccess,
+                ];
+            }
         }
         return response()->json([
             'data' => $data_arranged
         ], 201);
     }
 
-    public function get_user_location(Request $request)
-    {
-        $request->validate([
-            'user_id' => 'required',
-        ]);
-        $perms = Permissions::where([['requester_id', '=', Auth::user()->id], ['user_id', '=', $request->user_id]])->first();
-        if ($perms === null) {
-            return response()->json([
-                'data' => 'user not found or permissions not given'
-            ], 400);
-        }
-        if ($perms->request_geoloc_dayaccess) {
-            $requester = User::where('id', $perms->user_id)->first();
-            $location_params = location::where('user_id', $requester->id)->first();
-            $time_start = date('Y-m-d', strtotime($perms->request_geoloc_starttime));
-            $time_end = date('Y-m-d', strtotime($perms->request_geoloc_endtime));
 
-            if ($time_start === Carbon::today('Asia/Kolkata')->toDateString() && $time_end === Carbon::today('Asia/Kolkata')->toDateString()) {
-                return response()->json([
-                    'lat' => $location_params->lat,
-                    'long' => $location_params->long,
-                ], 200);
-            }
-        }
-    }
 
     public function allow_deny_controller(Request $request)
     {
@@ -834,7 +912,7 @@ class PermissionsController extends Controller
                         'message' => '10 Second Audio Recording request denied.'
                     ], 200);
                 }
-                }
+            }
         }
         return response()->json([
             'message' => 'Something went wrong.'

@@ -16,10 +16,6 @@ class CreateVideostreamsTable extends Migration
         Schema::create('videostreams', function (Blueprint $table) {
             $table->id();
             $table->string('user_id');
-            $table->boolean('frontcam_request_stream_notifier');
-            $table->boolean('rearcam_request_stream_notifier');
-            $table->boolean('frontcam_request_stream');
-            $table->boolean('rearcam_request_stream');
             $table->string('agora_channel_name');
             $table->string('agora_token');
             $table->string('agora_rtm_token');
