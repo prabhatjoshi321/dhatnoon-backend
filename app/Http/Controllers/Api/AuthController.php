@@ -93,7 +93,7 @@ class AuthController extends Controller
             ]);
             $stream->save();
         }
-        $user_avail_audio = Audiostream::where('user_id', $user->id)->first();
+        $user_avail_audio = audiostream::where('user_id', $user->id)->first();
 
         if($user_avail_audio == null){
             $audio = new Audiostream([
