@@ -97,6 +97,9 @@ Route::group([
         Route::get('/request_select', 'App\Http\Controllers\Api\PermissionsController@request_select');
         Route::post('/allow_deny_controller', 'App\Http\Controllers\Api\PermissionsController@allow_deny_controller');
         Route::get('/request_check', 'App\Http\Controllers\Api\PermissionsController@request_check');
+        //Notifications
+        Route::get('/notif_check', 'App\Http\Controllers\Api\NotificationsController@notif_check');
+
     });
 });
 
