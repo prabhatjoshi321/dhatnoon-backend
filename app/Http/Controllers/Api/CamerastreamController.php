@@ -17,9 +17,6 @@ class CamerastreamController extends Controller
 {
     public function frontcam_pic_save(Request $request)
     {
-        $perms = Permissions::where('user_id', Auth::user()->id)->first();
-        $perms->request_fcampic_flag = 0;
-        $perms->save();
         $front_camera = Camerastream::where('user_id', Auth::user()->id)->first();
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('public/images');
@@ -27,9 +24,13 @@ class CamerastreamController extends Controller
             $front_camera->frontcam_pic = $string;
         }
         $front_camera->save();
+        $perms = Permissions::where('user_id', Auth::user()->id)->first();
+        $perms->request_fcampic_new_val = 1;
+        $perms->request_fcampic_flag = 0;
+        $perms->save();
         return response()->json([
             'data' => $front_camera,
-            'message' => 'Successfully sent front cam pic of user.'
+            'message' => 'Successfully saved front cam pic of user.'
         ], 201);
     }
 
@@ -58,6 +59,13 @@ class CamerastreamController extends Controller
                 'data' => 'user not found or permissions not given'
             ], 400);
         }
+
+        if ($perms->request_fcampic_new_val !== 1) {
+            return response()->json([
+                'data' => 'Unable to fetch new frontcam pic'
+            ], 400);
+        }
+        $perms->request_fcampic_new_val = 0;
         $perms->request_fcampic_flag = 0;
         $perms->save();
         if ($perms->request_fcampic_dayaccess) {
@@ -83,9 +91,6 @@ class CamerastreamController extends Controller
 
     public function rearcam_pic_save(Request $request)
     {
-        $perms = Permissions::where('user_id', Auth::user()->id)->first();
-        $perms->request_bcampic_flag = 0;
-        $perms->save();
         $rear_camera = Camerastream::where('user_id', Auth::user()->id)->first();
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('public/images');
@@ -93,6 +98,10 @@ class CamerastreamController extends Controller
             $rear_camera->rearcam_pic = $string;
         }
         $rear_camera->save();
+        $perms = Permissions::where('user_id', Auth::user()->id)->first();
+        $perms->request_bcampic_new_val = 1;
+        $perms->request_bcampic_flag = 0;
+        $perms->save();
         return response()->json([
             'data' => $rear_camera,
             'message' => 'Successfully sent rear cam pic of user.'
@@ -124,6 +133,13 @@ class CamerastreamController extends Controller
                 'data' => 'user not found or permissions not given'
             ], 400);
         }
+
+        if ($perms->request_bcampic_new_val !== 1) {
+            return response()->json([
+                'data' => 'Unable to fetch new rearcam pic'
+            ], 400);
+        }
+        $perms->request_bcampic_new_val = 0;
         $perms->request_bcampic_flag = 0;
         $perms->save();
         if ($perms->request_bcampic_dayaccess) {

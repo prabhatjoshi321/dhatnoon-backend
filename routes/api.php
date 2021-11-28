@@ -92,11 +92,11 @@ Route::group([
         Route::get('/audio10secstream_request_check', 'App\Http\Controllers\Api\AudiotreamController@audio10secstream_request_check');
         Route::post('/get_10secaudio', 'App\Http\Controllers\Api\AudiotreamController@get_10secaudio');
         //Permission Controller
+        Route::get('/request_check', 'App\Http\Controllers\Api\PermissionsController@request_check');
         Route::post('/make_request', 'App\Http\Controllers\Api\PermissionsController@make_request');
         Route::get('/approved_requests', 'App\Http\Controllers\Api\PermissionsController@approved_requests');
         Route::get('/request_select', 'App\Http\Controllers\Api\PermissionsController@request_select');
         Route::post('/allow_deny_controller', 'App\Http\Controllers\Api\PermissionsController@allow_deny_controller');
-        Route::get('/request_check', 'App\Http\Controllers\Api\PermissionsController@request_check');
         //Notifications
         Route::get('/notif_check', 'App\Http\Controllers\Api\NotificationsController@notif_check');
 

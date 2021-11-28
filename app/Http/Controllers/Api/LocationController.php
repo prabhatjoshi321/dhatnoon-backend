@@ -21,15 +21,16 @@ class LocationController extends Controller
             'long' => 'required',
         ]);
 
-        //perms
-        $perms = Permissions::where('user_id', Auth::user()->id)->first();
-        $perms->request_geoloc_flag = 0;
-        $perms->save();
-
         $data = location::where('user_id', Auth::user()->id)->first();
         $data->lat = $request->lat;
         $data->long = $request->long;
         $data->save();
+
+        //perms
+        $perms = Permissions::where('user_id', Auth::user()->id)->first();
+        $perms->request_geoloc_new_val = 1;
+        $perms->request_geoloc_flag = 0;
+        $perms->save();
 
         return response()->json([
             'data' => $data,
@@ -62,15 +63,20 @@ class LocationController extends Controller
                 'data' => 'user not found or permissions not given'
             ], 400);
         }
+
+        if ($perms->request_geoloc_new_val !== 1) {
+            return response()->json([
+                'data' => 'Unable to fetch new location'
+            ], 400);
+        }
+        $perms->request_geoloc_new_val = 0;
         $perms->request_geoloc_flag = 0;
         $perms->save();
         if ($perms->request_geoloc_dayaccess) {
             $requester = User::where('id', $perms->user_id)->first();
             $location_params = location::where('user_id', $requester->id)->first();
-            $time_start = date('Y-m-d', strtotime($perms->request_geoloc_starttime));
-            $time_end = date('Y-m-d', strtotime($perms->request_geoloc_endtime));
 
-            if ($time_start === Carbon::today('Asia/Kolkata')->toDateString() && $time_end === Carbon::today('Asia/Kolkata')->toDateString()) {
+            if (Carbon::now('Asia/Kolkata')->greaterThan($perms->request_geoloc_starttime) && Carbon::now('Asia/Kolkata')->lessThan($perms->request_geoloc_endtime)) {
                 return response()->json([
                     'lat' => $location_params->lat,
                     'long' => $location_params->long,
