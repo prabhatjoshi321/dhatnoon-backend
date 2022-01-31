@@ -7,7 +7,7 @@ use App\Models\camerastream;
 use App\Models\videostream;
 use App\Models\audiostream;
 use App\Models\User;
-use App\Models\location;
+use App\Models\Location;
 use App\Models\Permissions;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -59,10 +59,10 @@ class AuthController extends Controller
         $token->save();
 
         //Location table entry creation
-        $user_avail_loc = location::where('user_id', $user->id)->first();
+        $user_avail_loc = Location::where('user_id', $user->id)->first();
 
         if($user_avail_loc == null){
-            $location = new location([
+            $location = new Location([
                 'user_id' => $user->id,
                 'lat' => 0,
                 'long' => 0,

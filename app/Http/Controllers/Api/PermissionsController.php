@@ -206,11 +206,11 @@ class PermissionsController extends Controller
         $requester = User::where('id', $requester_id)->first();
 
         // User Ids
-        if ($requester_id === $requested_user_id) {
-            return response()->json([
-                'message' => 'You cannot post request to yourself'
-            ], 200);
-        }
+        // if ($requester_id === $requested_user_id) {
+        //     return response()->json([
+        //         'message' => 'You cannot post request to yourself'
+        //     ], 200);
+        // }
 
         //Exist check
         $exist = Permissions::where([['requester_id', '=', $requester_id], ['user_id', '=', $requested_user_id]])->first();
