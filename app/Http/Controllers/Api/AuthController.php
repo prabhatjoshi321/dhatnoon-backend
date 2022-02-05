@@ -24,7 +24,7 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users',
-            'phone_number' => 'required|numeric|between:1000000000,9999999999',
+            'phone_number' => 'required|numeric|between:1000000000,9999999999|unique:users',
             'password' => 'required|string|confirmed|min:6'
         ]);
 
