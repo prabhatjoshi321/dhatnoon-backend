@@ -62,7 +62,8 @@ class CamerastreamController extends Controller
 
         if ($perms->request_fcampic_new_val !== 1) {
             return response()->json([
-                'data' => 'Unable to fetch new frontcam pic'
+                'data' => 'Unable to fetch new frontcam pic',
+                'error' => '1'
             ], 400);
         }
         $perms->request_fcampic_new_val = 0;
@@ -136,7 +137,8 @@ class CamerastreamController extends Controller
 
         if ($perms->request_bcampic_new_val !== 1) {
             return response()->json([
-                'data' => 'Unable to fetch new rearcam pic'
+                'data' => 'Unable to fetch new rearcam pic',
+                'error' => '1'
             ], 400);
         }
         $perms->request_bcampic_new_val = 0;

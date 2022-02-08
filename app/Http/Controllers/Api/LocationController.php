@@ -64,7 +64,7 @@ class LocationController extends Controller
             ], 400);
         }
 
-        if ($perms->request_geoloc_new_val !== 1) {
+        if ($perms->request_geoloc_new_val === 0) {
             return response()->json([
                 'data' => 'Unable to fetch new location'
             ], 400);
